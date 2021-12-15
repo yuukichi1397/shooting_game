@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <title>this is test</title>
+        
+        <style>
+            canvas
+            {
+                background: black
+            }
+        </style>
+
+        <script>
+            let context;
+
+            let image = new Image();
+            image.src = 'main.png';
+            let image2 = new Image();
+            image2.src = 'tama.png';
+            let yoko = 270;
+            let tate = 220;
+            let up = -4;
+            let down = 4;
+            let upperflag = false;
+            let downflag=false;
+            let leftflag=false;
+            let rightflag=false;
+            let bulletcount=0;
+            let bulleter =[];
+
+            class Bullet{
+                constructor(yoko,tate){
+                    this.yoko=yoko;
+                    this.tate=tate;
+                }
+                draw(){
+                    context.drawImage(image2, this.yoko+5, this.tate-4);
+                }
+
+            }
+
+            function move()
+            {                
+                if(upperflag){
+                    tate=tate+up; 
+                }
+                if(downflag){
+                    tate=tate+down;
+                }
+                if(leftflag){
+                    yoko=yoko+up;
+                }
+                if(rightflag){
+                    yoko=yoko+down;
+                }
+            }
+            
+            function shot(bulletcount)
+            {
+                if(bulletcount<5){
+                    bulleter[bulletcount] = new Bullet(yoko,tate);
+                }
+            }
+            
+            
+            function start()
+            {
+                let canvas = document.getElementById('canvas');
+                context = canvas.getContext('2d');
+
+                document.addEventListener('keydown', (e) =>{
+                    if(e.key == 'w'){
+                        upperflag = true;
+                    }
+                    if(e.key == 's'){
+                        downflag=true;
+                    }
+                    if(e.key == 'a'){
+                        leftflag=true;
+                    }
+                    if(e.key == 'd'){
+                        rightflag=true;
+                    }
+                });
+                document.addEventListener('keyup',(e)=>{
+                    if(e.key == 'w'){
+                        upperflag = false;
+                    }
+                    if(e.key == 's'){
+                        downflag=false;
+                    }
+                    if(e.key == 'a'){
+                        leftflag=false;
+                    }
+                    if(e.key == 'd'){
+                        rightflag=false;
+                    }
+                });
+                document.addEventListener('keypress', (e)=>{
+                    if(e.key == ' '){
+                        shot(bulletcount++);
+                    }
+                });
+                
+                loop();
+            }
+
+            
+            function loop()
+            {
+                context.clearRect(0, 0, 640, 360);
+                context.drawImage(image, yoko, tate);
+                move();
+                for(let step=0;step<bulletcount;step++){
+                    bulleter[step].draw();
+                }
+
+                window.requestAnimationFrame(loop);
+            }
+
+        </script>
+        
+    
+    </head>
+
+    <body onload='start()'>
+        <canvas id='canvas' width='640' height='360'></canvas>
+    </body>
+
+</html>

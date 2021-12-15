@@ -1,0 +1,33 @@
+html {
+    height: 100%;
+  }
+  
+  body {
+    text-align: center;
+    font-family: '游ゴシック体';
+    font-weight: bold;
+    background-color: #f6f7d7;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+.btn {
+    box-sizing: border-box;
+    appearance: none;
+    text-align: center;
+    display: inline-block;
+    font-size: 4vmin;
+    font-weight: bold;
+    color: #67c5ff;
+    text-decoration: none;
+    border: solid 0.5vh #67c5ff;
+    border-radius: 3vh;
+    background: #fff;
+    min-width: 10em;
+    margin: 0 2vmin;
+    margin-top: 4vmin;
+    padding: 0.5em;
+    transition: .3s;
+    cursor: pointer;
+  }
+  
