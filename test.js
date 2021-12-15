@@ -71,6 +71,19 @@ class Bullet extends Rectagle{
     }
 }
 
+class MyBullet extends Bullet{
+
+}
+
+class EnemyBullet extends Bullet{
+    constructor(x,y,directionx,directiony){
+        super(x,y,directionx,directiony);
+    }
+    attack(){
+
+    }
+}
+
 class Character extends Rectagle{
     constructor(){
         super(2,220,20,20);
@@ -191,6 +204,10 @@ function shot(bulletcount) {
     }
 }
 
+function enemy_shot(bulletcount){
+
+}
+
 function start() {
     let canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
@@ -204,21 +221,23 @@ function start() {
             wall[i][j] = new Wall(i*80+40,j*80+40);
         }
     }
-    document.addEventListener('keydown', (e) => {
-        flag[e.key]=true;
-    });
-    document.addEventListener('keyup', (e) => {
-        flag[e.key]=false;
-    });
-    document.addEventListener('keypress', (e) => {
-        if (e.key == ' ') {
-            shot(bulletcount++);
-        }
-    });
+    
     ene = new Enemy(2,2);
 
     loop();
 }
+
+document.addEventListener('keydown', (e) => {
+    flag[e.key]=true;
+});
+document.addEventListener('keyup', (e) => {
+    flag[e.key]=false;
+});
+document.addEventListener('keypress', (e) => {
+    if (e.key == ' ') {
+        shot(bulletcount++);
+    }
+});
 
 function loop() {
     context.clearRect(0, 0, 1280, 720);
