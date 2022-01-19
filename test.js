@@ -19,8 +19,9 @@ let enemy_bulleter = [];
 let character;
 let coordinate =[];
 let wall = new Array(5);
-let ene;
+let ene = [];
 let gameFlag = true;
+let enemy_Counter = 2;
 
 class Rectagle{
     constructor(x,y,width,height){
@@ -229,12 +230,14 @@ function shot(bulletcount) {
 let enemy_reload = 0;
 function enemy_shot() {
     if (enemy_reload == 0) {
-        coordinate = ene.getcoordinate();
+        ene.forEach(element=>{
+        coordinate = element.getcoordinate();
         enemy_bulleter.push(new EnemyBullet(coordinate[0], coordinate[1],  0,  1));
         enemy_bulleter.push(new EnemyBullet(coordinate[0], coordinate[1],  1,  0));
         enemy_bulleter.push(new EnemyBullet(coordinate[0], coordinate[1],  0, -1));
         enemy_bulleter.push(new EnemyBullet(coordinate[0], coordinate[1], -1,  0));
         enemy_reload = 10;
+        });
     } else {
         enemy_reload--;
     }
@@ -265,8 +268,10 @@ function start() {
             wall[i][j] = new Wall(i*80+40,j*80+40);
         }
     }
-    
-    ene = new Enemy(2,2);
+
+    for(let i=0;i<enemy_Counter;i++){
+        ene[i] = new Enemy(i*80+1,2);
+    }
 
     loop();
 }
@@ -298,18 +303,22 @@ function gameClear(){
     cancelAnimationFrame(loopRec);
     context.font="90px 'Impact'";
     context.fillStyle = "yellow";
-    context.fillText("GAME CLERE",5,220);
+    context.fillText("GAME CLEAR",5,220);
 }
 
 let loopRec = null;
 
 function loop() {
     context.clearRect(0, 0, 1280, 720);
-    ene.draw();
+    ene.forEach(element=>{
+        element.draw();
+    })
     character.draw();
     character.move();
     let coordinate = character.getcoordinate();
-    ene.move(coordinate[0],coordinate[1]);
+    ene.forEach(element=>{
+        element.move(coordinate[0],coordinate[1]);
+    });
     enemy_shot();
     myBulleter.forEach(element=>{element.move();element.draw()});
 
@@ -343,29 +352,31 @@ function loop() {
                 enemy_bulleter.splice(enemy_bulleter.indexOf(element2),1);
             }
         })
-        
-        if(element.hitTest(ene)){
-            let x = ene.x;
-            let y = ene.y;
-            if(element.hitTest_x(ene)){
-                ene.y=ene.before_y;
+        ene.forEach(element2=>{
+            let x = element2.x;
+            let y = element2.y;
+            if(element.hitTest_x(element2)){
+                element2.y=element2.before_y;
             }
-            if(element.hitTest_y(ene)){
-                ene.x=ene.before_x;
+            if(element.hitTest_y(element2)){
+                element2.x=element2.before_x;
             }
-            if(ene.x != x){
-                ene.y=y;
-                if(element.hitTest_x(ene)){
-                    ene.y=ene.before_y;
+            if(element2.x != x){
+                element2.y=y;
+                if(element.hitTest_x(element2)){
+                    element2.y=element2.before_y;
                 }
             }
-        }
+        })
     }));
     myBulleter.forEach(element=>{
-        if(element.hitTest(ene)){
-            myBulleter.splice(myBulleter.indexOf(element),1);
-            gameFlag=false;
-        }
+        ene.forEach(element2=>{
+            if(element.hitTest(element2)){
+                myBulleter.splice(myBulleter.indexOf(element),1);
+                ene.splice(ene.indexOf(element2),1);
+                enemy_Counter--;
+            }
+        })
     });
 
     enemy_bulleter.forEach(element=>{
@@ -377,12 +388,18 @@ function loop() {
     wall.forEach(element=>element.forEach(element2=>element2.draw()));
 
     character.update();
-    ene.update();
+    ene.forEach(element=>{
+        element.update();
+    })
 
     if (DEBUG) {
         context.font="15px 'Impact'";
         context.fillStyle="white";
         context.fillText("Tama:" + enemy_bulleter.length, 20, 20);
+    }
+
+    if(enemy_Counter<=0){
+        gameFlag=false;
     }
 
     loopRec = window.requestAnimationFrame(loop);
